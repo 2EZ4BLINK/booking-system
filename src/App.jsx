@@ -1,41 +1,34 @@
-import styled from "styled-components";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  Account,
+  Bookings,
+  Cabins,
+  Dashboard,
+  Login,
+  PageNotFound,
+  Settings,
+  Users,
+} from "./pages/index";
 import GlobalStyles from "./styles/GlobalStyles";
-import { Button } from "./ui/Button";
-import { Input } from "./ui/Input";
-import { Heading } from "./ui/Heading";
-import { Row } from "./ui/Row";
-
-const StyledApp = styled.main`
-  padding: 20px;
-`;
 
 const App = () => {
   return (
     <>
       <GlobalStyles />
 
-      <StyledApp>
-        <Row>
-          <Row type="horizontal">
-            <Heading as="h1">The wild oasis</Heading>
-            <div>
-              <Heading as="h2">Checking</Heading>
-              <Button>Check in</Button>
-              <Button variation="secondary" size="small">
-                Check out
-              </Button>
-            </div>
-          </Row>
-
-          <Row>
-            <Heading as="h3">Form</Heading>
-            <form action="">
-              <Input type="number" placeholder="Number of guests" />
-              <Input type="number" placeholder="Number of guests" />
-            </form>
-          </Row>
-        </Row>
-      </StyledApp>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Navigate replace to="dashboard" />} />
+          <Route path="account" element={<Account />} />
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="cabins" element={<Cabins />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="login" element={<Login />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="users" element={<Users />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };
