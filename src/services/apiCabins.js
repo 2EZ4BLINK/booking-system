@@ -11,17 +11,29 @@ export const getCabins = async () => {
   return data;
 };
 
-export const createCabin = async (newCabin) => {
+export const createEditCabin = async (newCabin, id) => {
+  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
+
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
     "",
   );
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+  const imagePath = hasImagePath
+    ? newCabin.image
+    : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
 
-  const { data, error } = await supabase
-    .from("cabins")
-    .insert([{ ...newCabin, image: imagePath }])
-    .select();
+  // Create/Edit Cabin
+  let query = supabase.from("cabins"); // selects the table you want to work with.
+
+  // Create
+  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]); // performs an INSERT operation and adds a new row into the cabins table.
+
+  // Edit
+  if (id) query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
+
+  const { data, error } = await query
+    .select() // After inserting, return the inserted row(s) back to me.
+    .single(); // This tells Supabase I expect only ONE row to be returned — not an array
 
   if (error) {
     console.error(error);
